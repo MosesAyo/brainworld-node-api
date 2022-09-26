@@ -8,7 +8,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 
 router.get("/showhomepage", async (req, res) => {
-  res.send("HEoolos");
+  res.send("Hellos");
 });
 const jwt = require("jsonwebtoken");
 router.post("/register", async (req, res) => {

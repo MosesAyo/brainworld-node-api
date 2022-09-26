@@ -7,7 +7,8 @@ const bodyParser = require("body-parser");
 const http = require("http");
 const server = http.createServer(app);
 const socketIO = require("socket.io")(server);
-const db = "mongodb://localhost:27017/brainworld_db";
+const db = process.env.DB_URL;
+// const db = "mongodb://localhost:27017/brainworld_db";
 require("./config/mongo.js")(db);
 
 app.use(cors());
