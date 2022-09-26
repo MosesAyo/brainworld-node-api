@@ -10,4 +10,4 @@ This is a brainworld api written in node js to power a flutter mobile e-learning
 - **Video call**
 - **Voice internet call**
 
-![Brain world logo]('images/brainworld-logo.png')
+![Brain world logo](images/brainworld-logo.png)
