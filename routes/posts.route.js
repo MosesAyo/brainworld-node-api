@@ -98,8 +98,8 @@ router.post("/getPost", auth, async (req, res) => {
 });
 router.post("/getAllPost", auth, async (req, res) => {
   // res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.setHeader("Transfer-Encoding", "chunked");
+  // res.writeHead(200, { "Content-Type": "text/plain" });
+  // res.setHeader("Transfer-Encoding", "chunked");
   Post.find({}, (err, posts) => {
     return res.json({
       success: true,
