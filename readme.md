@@ -1,5 +1,6 @@
-#Brain World APP Node/Express JS API
-This is a brainworld api written in node js to power a flutter mobile e-learning app.#
+# Brain World APP Node/Express JS API
+
+This is a brainworld api written in node js to power a flutter mobile e-learning app.
 
 ##App functionalities##
 
@@ -8,3 +9,5 @@ This is a brainworld api written in node js to power a flutter mobile e-learning
 - **Video conferencing**
 - **Video call**
 - **Voice internet call**
+
+![Brain world logo]('images/brainworld-logo.png')
