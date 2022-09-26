@@ -3,8 +3,8 @@ This is a brainworld api written in node js to power a flutter mobile e-learning
 
 ##App functionalities##
 
-**Purchase Courses**
-**Chat system**
-**Video conferencing**
-**Video call**
-**Voice internet call**
+- **Purchase Courses**
+- **Chat system**
+- **Video conferencing**
+- **Video call**
+- **Voice internet call**
