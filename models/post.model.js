@@ -18,6 +18,7 @@ const postSchema = new mongoose.Schema(
     videoUrls: { type: Array, default: [] },
     likes: { type: Array, default: [] },
     comments: { type: Array, default: [] },
+    postedOn: { type: String },
   },
   {
     timestamps: true,
