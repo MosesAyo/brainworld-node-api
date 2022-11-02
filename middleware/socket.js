@@ -55,7 +55,7 @@ module.exports = (app, socketIO, db) => {
     //   }); //get all users and remove the password
     // });
   });
-  socket.on("connect_error", (err) => {
+  socketIO.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
 };
