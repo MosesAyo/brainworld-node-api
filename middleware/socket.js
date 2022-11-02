@@ -7,9 +7,6 @@ const sendMessage = require("../controllers/chat.controller");
 const Chat = require("../models/chat.model");
 
 module.exports = (app, socketIO, db) => {
-  //   io.on("connection", function (socket) {
-
-  //   })
   socketIO.on("connection", (client) => {
     console.log("Connection Successfully", client.id);
 
@@ -19,20 +16,12 @@ module.exports = (app, socketIO, db) => {
 
     client.on("_getUsers", ({ senderEmail }) => {
       User.find({}, (err, users) => {
-        console.log(users);
+        // console.log(users);
         socketIO.emit("_allUsers", users);
       }).select("-password"); //get all users and remove the password
     });
 
-    // socket.on("_getAllChats", ({ chatID }) => {
-    //   Chat.find({ chatID: chatID }, (err, chats) => {
-    //     // console.log(chatID);
-    //     // console.log(chats);
-    //     socketIO.emit("_allChats", chats);
-    //   }); //get all users and remove the password
-    // });
-
-    client.on("sendMessage", ({ data: data, chatID: chatID }) => {
+    client.on("sendMessage", async ({ data: data, chatID: chatID }) => {
       if (data === null) {
         //get all chats
         Chat.find({ chatID: chatID }, (err, chats) => {
@@ -42,21 +31,29 @@ module.exports = (app, socketIO, db) => {
         });
       } else {
         console.log("message Successfully", data.sendersid);
-        sendMessage(data);
-        Chat.find({ chatID: chatID }, (err, chats) => {
-          // console.log("chatsdown");
-          // console.log(chats);
-
-          socketIO.emit("_getAllChats", { chats: [data] });
+        // await sendMessage(data, chatID);
+        const newChat = new Chat({
+          sendersid: data.sendersid,
+          sendersEmail: data.senderEmail,
+          receiverEmail: data.receiverEmail,
+          messageText: data.messageText,
+          chatID: chatID,
+          sentAt: data.sentAt,
         });
+        await newChat.save();
+        var chats = await Chat.find({ chatID: chatID }).lean();
+
+        socketIO.emit("_getAllChats", { chats: chats });
       }
     });
 
-    client.on("postReaction", () => {
-      Post.find({}, (err, posts) => {
-        console.log(posts);
-        socketIO.emit("getAllPost", posts);
-      }); //get all users and remove the password
-    });
+    // client.on("postReaction", ({postReaction}) => {
+
+    //   Post.find({}, (err, posts) => {
+    //     console.log(posts);
+    //     socketIO.emit("getAllPost", posts);
+    //   }); //get all users and remove the password
+    // });
   });
 };
+// 07065227552;

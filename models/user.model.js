@@ -12,9 +12,10 @@ const userSchema = new mongoose.Schema(
     password: { type: String },
     phone: { type: String },
     address: { type: String },
-    profile_picture: { type: String, default: "" },
+    profilePicture: { type: String, default: "" },
     user_type: { type: String, default: "normal_user" },
     token: { type: String },
+    subscribers: { type: Array, default: [] },
   },
   {
     timestamps: true,

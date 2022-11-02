@@ -1,26 +1,64 @@
 const Post = require("../models/post.model");
 const auth = require("../middleware/auth");
+const upload = require("../middleware/books_multer");
+const cloudinary = require("../config/cloudinary.js");
+const fs = require("fs");
 
 const express = require("express");
 const router = express.Router();
 
-router.post("/createPost", auth, async (req, res) => {
+const uploadPicture = upload.single("image");
+
+router.post("/addPost", auth, async (req, res) => {
   // req.caption = req.user.user_id;
-  const newPost = new Post({ ...req.body, user_id: req.user.user_id });
-  // console.log(req.user.user_id);
-  // console.log(req.body);
-  // Our register logic starts here
-  console.log(newPost);
-  try {
-    const savePost = await newPost.save();
-    res.status(200).json({
-      success: true,
-      message: "Post createdSuccessfully 🙌 ",
-      post: savePost,
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  console.log("is hitted");
+
+  uploadPicture(req, res, async function (err) {
+    if (err) {
+      console.log(err);
+      return res.status(400).send({ message: err.message });
+    }
+    const uploader = async (path) => await cloudinary.uploads(path, "Posts");
+
+    try {
+      const file = req.file;
+      console.log("file");
+      console.log(file);
+      if (!file) {
+        //no file with post
+        const newPost = new Post({
+          ...req.body,
+          user_id: req.user.user_id,
+        });
+        const savePost = await newPost.save();
+        return res.status(200).json({
+          success: true,
+          message: "Post createdSuccessfully 🙌 ",
+          post: savePost,
+        });
+      } else {
+        const { path } = file;
+        const newPath = await uploader(path);
+        fs.unlinkSync(path);
+        console.log("newPath.url");
+        console.log(newPath.url);
+        console.log(path);
+        const newPost = new Post({
+          ...req.body,
+          image: newPath.url,
+          user_id: req.user.user_id,
+        });
+        const savePost = await newPost.save();
+        return res.status(200).json({
+          success: true,
+          message: "Post createdSuccessfully 🙌 ",
+          post: savePost,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
   // Our register logic ends here
 });
 //update post
@@ -82,6 +120,32 @@ router.post("/likePost", auth, async (req, res) => {
         message: "Post has been disliked 🙌 ",
       });
     }
+  } catch (err) {
+    console.log(err);
+  }
+  // Our like post logic ends here
+});
+router.post("/comment", auth, async (req, res) => {
+  console.log("ist working");
+  if (!req.body.post_id) {
+    return res.status(200).json({
+      success: false,
+      message: "Post id is required",
+    });
+  }
+
+  try {
+    const post = await Post.findById(req.body.post_id);
+    //user_id is id of user that wants to comment on a post
+    await post.updateOne({
+      $push: {
+        comments: { user_id: req.user.user_id, comment: req.body.comment },
+      },
+    });
+    res.status(200).json({
+      success: true,
+      message: "Comment successfully added to post 🙌",
+    });
   } catch (err) {
     console.log(err);
   }

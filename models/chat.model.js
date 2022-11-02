@@ -8,6 +8,7 @@ const chatsSchema = new mongoose.Schema({
   messageText: { type: String },
   imageURL: { type: String },
   type: { type: String }, //wether file or imagec
+  sentAt: { type: String },
   createdAt: { type: String, default: Date.now },
 });
 

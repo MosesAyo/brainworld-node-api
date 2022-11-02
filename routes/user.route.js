@@ -3,6 +3,9 @@ const User = require("../models/user.model");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
+const fs = require("fs");
+const upload = require("../middleware/books_multer");
+
 // const app = express();
 
 const router = express.Router();
@@ -109,10 +112,62 @@ router.post("/login", async (req, res) => {
   }
   // Our register logic ends here
 });
-router.get("/getUser", auth, async (req, res) => {
+router.post("/updateUser", auth, async (req, res) => {
+  await User.findByIdAndUpdate(req.user.user_id, req.body, {
+    useFindAndModify: false,
+  });
+  var user = await User.findById(req.user.user_id).lean();
+  return res.status(200).json({
+    success: true,
+    message: "Info retrieved successfully 🙌 ",
+    user: user,
+  });
+});
+const uploadPicture = upload.single("image");
+
+router.post("/updateProfilePicture", auth, async (req, res) => {
+  console.log("profile dp is hitted");
+  uploadPicture(req, res, async function (err) {
+    if (err) {
+      console.log(err);
+      return res.status(400).send({ message: err.message });
+    }
+    try {
+      const url = req.protocol + "://" + req.get("host");
+      const file = req.file;
+      const { path } = file;
+      const newPath = path.replace(/\\/g, "/");
+      const dattoUpdate = {
+        profilePicture: url + "/" + newPath,
+      };
+      let user = await User.findByIdAndUpdate(req.user.user_id, dattoUpdate, {
+        useFindAndModify: false,
+      }).select("-token");
+      // console.log(user);
+      res.status(200).json({
+        success: true,
+        message: "Info retrieved successfully 🙌",
+        user: user,
+        dp: path,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});
+router.post("/getUser", auth, async (req, res) => {
   // console.log(req.user)
 
   let user = await User.findById(req.user.user_id).select("-password");
+  res.status(200).json({
+    success: true,
+    message: "Info retrieved successfully 🙌 ",
+    user: user,
+  });
+});
+router.post("/getAUser", auth, async (req, res) => {
+  let user = await User.findById(req.body.user_id).select("-password");
+  console.log(user);
   res.status(200).json({
     success: true,
     message: "Info retrieved successfully 🙌 ",
@@ -127,10 +182,4 @@ router.get("/getAllUsers", async (req, res) => {
   }).select("-password");
 });
 
-router.post("/welcome", auth, async (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
-});
-router.post("/all chat", auth, async (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
-});
 module.exports = router;

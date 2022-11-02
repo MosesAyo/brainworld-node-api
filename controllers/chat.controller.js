@@ -1,8 +1,8 @@
 const Chat = require("../models/chat.model");
 
-const sendMessage = (
-  { sendersid, receiverEmail, senderEmail, chatID, messageText },
-  socket
+const sendMessage = async (
+  { sendersid, receiverEmail, senderEmail, messageText },
+  chatID
 ) => {
   // console.log("message Successfully", data.messageText);
   // console.log(receiverEmail);
