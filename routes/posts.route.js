@@ -23,7 +23,7 @@ router.post("/addPost", auth, async (req, res) => {
     try {
       const file = req.file;
       console.log("file");
-      console.log(file);
+      console.log(req.body.postedOn);
       if (!file) {
         //no file with post
         const newPost = new Post({

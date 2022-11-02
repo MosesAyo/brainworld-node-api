@@ -17,6 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(express.static("public"));
+app.get("/", function (req, res) {
+  res.setHeader("Content-Type", "text/html");
+  res.end("<h1>Brain world</h1>");
+});
 app.use("/", require("./routes/user.route"));
 app.use("/admin", require("./routes/adminroutes/addcategory.route"));
 app.use("/post", require("./routes/posts.route"));
