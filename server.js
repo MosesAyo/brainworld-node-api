@@ -11,7 +11,6 @@ const socketIO = require("socket.io")(server);
 const db = process.env.DB_URL;
 // const db = "mongodb://localhost:49779/brainworld_db";
 require("./config/mongo.js")(db);
-
 app.use(cors());
 app.use(express.json()); //making sure the server can use json, this is use to make the app able to use json
 app.use(express.urlencoded({ extended: true }));
@@ -30,15 +29,19 @@ app.use("/upload", require("./routes/upload.route"));
 app.use("/payment", require("./routes/payment.route"));
 // app.use("/upload", require("./routes/upload.route"));
 
+console.log(server);
+socketIO.on("connect_error", (err) => {
+  console.log(`connect_error due to ${err.message}`);
+});
 require("./middleware/socket")(app, socketIO, db);
 require("./middleware/postssocket")(app, socketIO, db);
 
-// server.listen(port, () => {
-//   console.log(`Listening on port:: http://localhost:${port}/`);
-// });
-httpProxy
-  .createProxyServer({
-    target: "https://brainworld-api.cyclic.app     ",
-    ws: true,
-  })
-  .listen(80);
+server.listen(port, () => {
+  console.log(`Listening on port:: http://localhost:${port}/`);
+});
+// httpProxy
+//   .createProxyServer({
+//     target: "https://brainworld-api.cyclic.app",
+//     ws: true,
+//   })
+//   .listen(port);
