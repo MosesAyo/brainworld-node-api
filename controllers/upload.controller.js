@@ -6,6 +6,7 @@ const LocalBook = require("../models/localbooks.model");
 const addBook = (data) => {
   return new Book({
     usersId: data.usersId,
+    title: data.title,
     price: data.price,
     category: data.category,
     bookCoverImageURL: data.bookCoverImageURL,

@@ -13,7 +13,9 @@ const uploadCourse = upload.fields([
   { name: "videos" },
   { name: "file" },
 ]);
-
+// router.post("/uploadCourseTest", auth, async (req, res) => {
+//   console.log(req.body.title);
+// });
 router.post("/uploadCourse", auth, async (req, res) => {
   // console.log(req.user.user_id);
   uploadCourse(req, res, async function (err) {
@@ -27,13 +29,21 @@ router.post("/uploadCourse", auth, async (req, res) => {
       const allUrls = {};
       const files = req.files;
       const filesArray = Object.keys(files);
-
+      var singlevideoPath = await req.files.video[0].path;
+      console.log("singlevideoPath");
+      console.log(singlevideoPath);
+      var newPath = await uploader(singlevideoPath);
+      allUrls["videoIntro"] = newPath.url;
       for (const file of filesArray) {
-        if (file === "video") {
-          //for single video course intro
-          var videoPath = req.files.video[0].path;
-          allUrls["videoIntro"] = videoPath;
-          // fs.unlinkSync(videoPath);
+        if (file === "file") {
+          const urls = [];
+          req.files.file.forEach(async (file) => {
+            var filePath = await file.path;
+            const newPath = await uploader(filePath);
+            urls.push(newPath.url);
+            fs.unlinkSync(filePath);
+          });
+          allUrls["fileUrls"] = urls;
         } else if (file === "videos") {
           const urls = [];
           const videos = await req.files.videos;
@@ -42,41 +52,34 @@ router.post("/uploadCourse", auth, async (req, res) => {
             console.log(video.path);
             var videoPath = await video.path;
             const newPath = await uploader(videoPath);
-            urls.push(newPath);
+            urls.push(newPath.url);
             fs.unlinkSync(videoPath);
           }
-          // req.files.videos.forEach(async (video) => {
-          //
 
-          //   // fs.unlinkSync(videoPath);
-          // });
-          console.log("urls");
           allUrls["videoUrls"] = urls;
-          console.log(urls);
         } else {
-          const urls = [];
-          req.files.file.forEach(async (file) => {
-            var filePath = await file.path;
-            const newPath = await uploader(filePath);
-            urls.push(newPath);
-            fs.unlinkSync(filePath);
-          });
-          allUrls["fileUrls"] = urls;
+          //for single video course intro
+          // fs.unlinkSync(singlevideoPath);
         }
       }
+      const subTobj = JSON.parse(JSON.stringify(req.body.subTitles)); // req.body = [Object: null prototype] { title: 'product' }
+      var subTitles = subTobj["n"];
+      subTitles = subTitles.replace(/\[|\]/g, "").split(",");
 
       console.log("allUrls up");
       console.log(allUrls);
       var newPost = new Post({
         user_id: req.user.user_id,
-        title: req.body.title,
-        price: req.body.price,
-        category: req.body.category,
+        // title: req.body.title,
+        // price: req.body.price,
+        // category: req.body.category,
+        ...req.body,
         caption: req.body.caption,
         postType: "course",
-        video: allUrls["videoIntro"],
+        video: allUrls["videoIntro"] ?? "",
         fileUrls: allUrls["fileUrls"],
         videoUrls: allUrls["videoUrls"],
+        subTitles: subTitles,
         // bookCoverImageURL: req.body.bookCoverImageURL,
         // bookURL: newPath,
         // filename: req.filename, //wether file or image
@@ -86,6 +89,7 @@ router.post("/uploadCourse", auth, async (req, res) => {
 
       // addBook(data);
       res.status(200).json({
+        success: true,
         message: "images uploaded successfully 🙌",
         data: allUrls,
         // url: newPath,

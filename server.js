@@ -7,8 +7,8 @@ const bodyParser = require("body-parser");
 const http = require("http");
 const server = http.createServer(app);
 const socketIO = require("socket.io")(server);
-const db = process.env.DB_URL;
-// const db = "mongodb://localhost:49837/brainworld_db";
+// const db = process.env.DB_URL;
+const db = "mongodb://localhost:49779/brainworld_db";
 require("./config/mongo.js")(db);
 
 app.use(cors());
@@ -26,6 +26,7 @@ app.use("/admin", require("./routes/adminroutes/addcategory.route"));
 app.use("/post", require("./routes/posts.route"));
 app.use("/course", require("./routes/courses.route"));
 app.use("/upload", require("./routes/upload.route"));
+app.use("/payment", require("./routes/payment.route"));
 // app.use("/upload", require("./routes/upload.route"));
 
 require("./middleware/socket")(app, socketIO, db);

@@ -11,11 +11,13 @@ const postSchema = new mongoose.Schema(
     title: { type: String, max: 200 },
     price: { type: String, max: 200 },
     category: { type: String, max: 500 },
+    requirements: { type: String, max: 500 },
     image: { type: String },
     video: { type: String }, //this is intro video for courses
     postType: { type: String, default: "post" }, //either course/post
     fileUrls: { type: Array, default: [] },
     videoUrls: { type: Array, default: [] },
+    subTitles: { type: Array, default: [] },
     likes: { type: Array, default: [] },
     comments: { type: Array, default: [] },
     postedOn: { type: String },
