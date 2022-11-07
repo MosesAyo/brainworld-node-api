@@ -1,11 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 4000 || process.env.PORT;
+const port = 3000 || process.env.PORT;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const http = require("http");
 const server = http.createServer(app);
+const httpProxy = require("http-proxy");
 const socketIO = require("socket.io")(server);
 const db = process.env.DB_URL;
 // const db = "mongodb://localhost:49779/brainworld_db";
@@ -32,6 +33,12 @@ app.use("/payment", require("./routes/payment.route"));
 require("./middleware/socket")(app, socketIO, db);
 require("./middleware/postssocket")(app, socketIO, db);
 
-server.listen(port, () => {
-  console.log(`Listening on port:: http://localhost:${port}/`);
-});
+// server.listen(port, () => {
+//   console.log(`Listening on port:: http://localhost:${port}/`);
+// });
+httpProxy
+  .createProxyServer({
+    target: "https://brainworld-api.cyclic.app     ",
+    ws: true,
+  })
+  .listen(80);
