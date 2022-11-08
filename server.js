@@ -29,7 +29,7 @@ app.use("/upload", require("./routes/upload.route"));
 app.use("/payment", require("./routes/payment.route"));
 // app.use("/upload", require("./routes/upload.route"));
 
-console.log(server);
+// console.log(server);
 socketIO.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
