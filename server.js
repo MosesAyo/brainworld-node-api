@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const httpProxy = require("http-proxy");
 const socketIO = require("socket.io")(server);
 const db = process.env.DB_URL;
-// const db = "mongodb://localhost:49779/brainworld_db";
+// const db = "mongodb://localhost:27018/brainworld_db";
 require("./config/mongo.js")(db);
 app.use(cors());
 app.use(express.json()); //making sure the server can use json, this is use to make the app able to use json
