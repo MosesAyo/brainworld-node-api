@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const httpProxy = require("http-proxy");
 const socketIO = require("socket.io")(server);
 const db = process.env.DB_URL;
-// const db = "mongodb://localhost:27018/brainworld_db";
+// const db = "mongodb://localhost:27016/radiant_db";
 require("./config/mongo.js")(db);
 app.use(cors());
 app.use(express.json()); //making sure the server can use json, this is use to make the app able to use json
@@ -27,6 +27,7 @@ app.use("/post", require("./routes/posts.route"));
 app.use("/course", require("./routes/courses.route"));
 app.use("/upload", require("./routes/upload.route"));
 app.use("/payment", require("./routes/payment.route"));
+app.use("/polls", require("./routes/polls.route"));
 // app.use("/upload", require("./routes/upload.route"));
 
 // console.log(server);
