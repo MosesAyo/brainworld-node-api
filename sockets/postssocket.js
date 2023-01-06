@@ -19,7 +19,7 @@ module.exports = (app, socketIO, db) => {
             posts: posts,
             message: message,
             comment: null,
-            subscribers: user.subscribers,
+            subscribers: user?.subscribers,
           });
         });
       } else if (postReaction.reactionType === "comment") {

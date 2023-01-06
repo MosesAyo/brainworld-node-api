@@ -34,8 +34,9 @@ app.use("/polls", require("./routes/polls.route"));
 socketIO.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
-require("./middleware/socket")(app, socketIO, db);
-require("./middleware/postssocket")(app, socketIO, db);
+require("./sockets/socket")(app, socketIO, db);
+require("./sockets/pollssockets")(app, socketIO, db);
+require("./sockets/postssocket")(app, socketIO, db);
 
 server.listen(port, () => {
   console.log(`Listening on port:: http://localhost:${port}/`);
