@@ -98,31 +98,30 @@ router.post("/votePoll1", auth, async (req, res) => {
     const poll = await Poll.findById(req.body.poll_id);
     console.log(req.body.option);
     const user_id = req.user.user_id;
-    console.log(user_id);
+    const votersIds = [];
+    poll.options.forEach((option) => {
+      option.votes.forEach((vote_id) => {
+        votersIds.push(vote_id);
+      });
+    });
+    console.log(votersIds);
+    const index = votersIds.indexOf(req.user.user_id);
+    console.log(index);
+    if (index >= 0) return;
+
     poll.options.forEach((option) => {
       if (option.option === req.body.option) {
-        console.log("option push");
-        if (option.votes.includes(req.user.user_id)) return;
-
         option.votes = [...option.votes, user_id];
-
-        console.log("votes");
-        console.log(option.votes);
+        console.log("votes successful");
       }
     });
     const pollUpdate = await Poll.findByIdAndUpdate(req.body.poll_id, poll, {
       new: true,
     });
-    console.log(pollUpdate);
     return res.status(200).json({
       success: true,
       message: "vote has been casted 🙌",
-      poll: poll,
-      op: poll.options.map((option) => {
-        if (option.name == "options2") {
-          return option["count"] + 1;
-        }
-      }),
+      poll: pollUpdate,
     });
   } catch (err) {
     console.log(err);
