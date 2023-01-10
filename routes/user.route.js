@@ -166,21 +166,16 @@ router.post("/getUser", auth, async (req, res) => {
   });
 });
 router.post("/getAUser", auth, async (req, res) => {
-  console.log("req.body.user_id");
-  console.log(req.body.user_id);
   let user = await User.findById(req.body.user_id).select("-password");
-  console.log("user" + user);
   res.status(200).json({
     success: true,
     message: "Info retrieved successfully 🙌",
     user: user,
   });
 });
-router.get("/getAllUsers", async (req, res) => {
-  // console.log(req.user)
-
+router.post("/getAllUsers", async (req, res) => {
   User.find({}, function (err, users) {
-    res.send(users);
+    res.status(200).json(users);
   }).select("-password");
 });
 

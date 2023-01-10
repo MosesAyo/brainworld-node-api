@@ -86,6 +86,44 @@ router.post("/votePoll", auth, async (req, res) => {
   }
   // Our like poll logic ends here
 });
+router.post("/votePercentage", auth, async (req, res) => {
+  if (!req.body.poll_id) {
+    return res.status(200).json({
+      success: false,
+      message: "Poll id is required",
+    });
+  }
+  try {
+    const poll = await Poll.findById(req.body.poll_id);
+    const user_id = req.user.user_id;
+    const votersIds = [];
+    const votersForEachOption = {};
+    poll.options.forEach((option) => {
+      option.votes.forEach((vote_id) => {
+        votersIds.push(vote_id);
+        console.log(option.votes.length);
+      });
+      votersForEachOption[option.option] = option.votes.length;
+    });
+    let totalVotes = votersIds.length;
+    console.log("totalVotes");
+    console.log(totalVotes);
+    console.log(votersForEachOption);
+    let votePercentage = {};
+    poll.options.forEach((option) => {
+      votePercentage[option.option] =
+        (votersForEachOption[option.option] / totalVotes) * 100 + "%";
+    });
+    console.log(votePercentage);
+    return res.status(200).json({
+      success: true,
+      message: "vote has been casted 🙌",
+      poll: poll,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 router.post("/votePoll1", auth, async (req, res) => {
   if (!req.body.poll_id) {
     return res.status(200).json({

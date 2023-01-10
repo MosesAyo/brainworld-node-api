@@ -5,7 +5,8 @@ const pollSchema = new mongoose.Schema(
     user_id: { type: String, required: true }, //course owner
     question: { type: String },
     options: { type: Array, default: [] },
-    votedFor: { type: String, default: "" },
+    voteIds: { type: Array, default: [] },
+    // votedFor: { type: String, default: {} },
     createAt: { type: String },
   },
   {
